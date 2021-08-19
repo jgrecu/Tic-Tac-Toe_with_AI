@@ -16,7 +16,21 @@ public class Main {
             if (!field.checkCoordinates(coord)) {
                 continue;
             }
-            isGameOver = true;
+            field.printBoard();
+
+            if (FieldState.get(field.checkSolved()) == FieldState.X || FieldState.get(field.checkSolved()) == FieldState.O) {
+                char winner = field.checkSolved();
+                System.out.println(winner + " wins");
+                scanner.close();
+                isGameOver = true;
+            } else if (field.isBoardFull() && field.checkSolved() == '0') {
+                System.out.println("Draw");
+                scanner.close();
+                isGameOver = true;
+            } else {
+                System.out.println("Game not finished");
+                isGameOver = true;
+            }
         }
     }
 }
