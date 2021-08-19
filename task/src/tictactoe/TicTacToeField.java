@@ -19,16 +19,25 @@ public class TicTacToeField {
         }
     }
 
-    public boolean equalTo(TicTacToeField other) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (field[i][j] != other.field[i][j]) {
-                    return false;
-                }
+    public TicTacToeField() {
+        field = new FieldState[3][3];
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                field[row][col] = FieldState.FREE;
             }
         }
-        return true;
     }
+
+    //    public boolean equalTo(TicTacToeField other) {
+//        for (int i = 0; i < 3; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                if (field[i][j] != other.field[i][j]) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     public boolean checkCoordinates(String input) {
         String[] rowStr = input.split(" ");
@@ -119,6 +128,5 @@ public class TicTacToeField {
             System.out.printf("%s%n", " |");
         }
         System.out.println("---------");
-        //System.out.println(Arrays.deepToString(field));
     }
 }
