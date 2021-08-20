@@ -585,40 +585,6 @@ files:
         }
     }
   learner_created: false
-- name: src/tictactoe/FieldState.java
-  visible: true
-  text: |
-    package tictactoe;
-
-    public enum FieldState {
-        X, O, FREE;
-
-        static FieldState get(char symbol) {
-            switch (symbol) {
-                case 'X':
-                    return X;
-                case 'O':
-                    return O;
-                case ' ': case '_':
-                    return FREE;
-                default:
-                    return null;
-            }
-        }
-
-        static char getChar(FieldState fieldState) {
-            switch (fieldState) {
-                case X:
-                    return 'X';
-                case O:
-                    return 'O';
-                case FREE:
-                    return ' ';
-            }
-            return ' ';
-        }
-    }
-  learner_created: true
 - name: src/tictactoe/TicTacToeField.java
   visible: true
   text: |
@@ -758,6 +724,46 @@ files:
 - name: src/tictactoe/Game.java
   visible: true
   learner_created: true
+- name: src/tictactoe/CellState.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    public enum FieldState {
+        X, O, FREE;
+
+        static FieldState get(char symbol) {
+            switch (symbol) {
+                case 'X':
+                    return X;
+                case 'O':
+                    return O;
+                case ' ': case '_':
+                    return FREE;
+                default:
+                    return null;
+            }
+        }
+
+        static char getChar(FieldState fieldState) {
+            switch (fieldState) {
+                case X:
+                    return 'X';
+                case O:
+                    return 'O';
+                case FREE:
+                    return ' ';
+            }
+            return ' ';
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/GameState.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/81/stages/448/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 20 Aug 2021 11:34:38 UTC
 record: -1

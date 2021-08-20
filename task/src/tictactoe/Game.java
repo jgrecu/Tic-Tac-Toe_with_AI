@@ -22,21 +22,26 @@ public class Game {
     }
 
     private void startGame() {
-        boolean isGameOver = false;
-        while (!isGameOver) {
-            getCoordinates();
+        int player = 0;
+        while (field.getGameState() == GameState.NOT_FINISHED) {
+            if (player % 2 == 0) {
+                getCoordinates();
+            } else {
+                field.easyAiMove();
+            }
             field.printBoard();
 
-            if (FieldState.get(field.checkSolved()) == FieldState.X || FieldState.get(field.checkSolved()) == FieldState.O) {
-                char winner = field.checkSolved();
+            if (field.getGameState() == GameState.O_WIN || field.getGameState() == GameState.X_WIN) {
+                String winner = field.getGameState() == GameState.X_WIN ? "X":"O";
                 System.out.println(winner + " wins");
                 scanner.close();
-                isGameOver = true;
-            } else if (field.isBoardFull() && field.checkSolved() == '0') {
+            } else if (field.getGameState() ==  GameState.DRAW) {
                 System.out.println("Draw");
                 scanner.close();
-                isGameOver = true;
             }
+            player++;
         }
     }
+
+
 }

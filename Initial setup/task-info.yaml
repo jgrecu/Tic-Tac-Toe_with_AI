@@ -488,7 +488,7 @@ files:
         }
     }
   learner_created: false
-- name: src/tictactoe/FieldState.java
+- name: src/tictactoe/CellState.java
   visible: true
   learner_created: true
 - name: src/tictactoe/TicTacToeField.java

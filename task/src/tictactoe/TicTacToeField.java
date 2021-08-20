@@ -1,43 +1,26 @@
 package tictactoe;
 
-public class TicTacToeField {
-    final FieldState[][] field;
+import java.util.Random;
 
-    public TicTacToeField(FieldState[][] field) {
-        this.field = new FieldState[3][3];
+public class TicTacToeField {
+    final CellState[][] field;
+
+    public TicTacToeField(CellState[][] field) {
+        this.field = new CellState[3][3];
         for (int i = 0; i < 3; i++) {
             System.arraycopy(field[i], 0, this.field[i], 0, 3);
         }
     }
 
-    public TicTacToeField(String str) {
-        field = new FieldState[3][3];
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                field[row][col] = FieldState.get(str.charAt(row * 3 + col));
-            }
-        }
-    }
 
     public TicTacToeField() {
-        field = new FieldState[3][3];
+        field = new CellState[3][3];
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                field[row][col] = FieldState.FREE;
+                field[row][col] = CellState.FREE;
             }
         }
     }
-
-    //    public boolean equalTo(TicTacToeField other) {
-//        for (int i = 0; i < 3; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                if (field[i][j] != other.field[i][j]) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
 
     public boolean checkCoordinates(String input) {
         String[] rowStr = input.split(" ");
@@ -54,13 +37,37 @@ public class TicTacToeField {
         int row = Integer.parseInt(rowStr[0]);
         int col = Integer.parseInt(rowStr[1]);
 
-        if (field[row - 1][col - 1] != FieldState.FREE) {
+        if (field[row - 1][col - 1] != CellState.FREE) {
             System.out.println("This cell is occupied! Choose another one!");
             return false;
         }
 
-        field[row - 1][col - 1] = FieldState.get(whosTurnIsIt());
+        CellState player = CellState.get(whosTurnIsIt());
+        setCell(row - 1, col - 1, player);
         return true;
+    }
+
+    public boolean checkCoordinatesAI(String input) {
+        String[] rowStr = input.split(" ");
+
+        if (Integer.parseInt(rowStr[0]) > 3 || Integer.parseInt(rowStr[1]) > 3) {
+            return false;
+        }
+
+        int row = Integer.parseInt(rowStr[0]);
+        int col = Integer.parseInt(rowStr[1]);
+
+        if (field[row - 1][col - 1] != CellState.FREE) {
+            return false;
+        }
+
+        CellState player = CellState.get(whosTurnIsIt());
+        setCell(row - 1, col - 1, player);
+        return true;
+    }
+
+    public void setCell(int x, int y, CellState cellState) {
+        field[x][y] = cellState;
     }
 
     public char whosTurnIsIt() {
@@ -68,10 +75,10 @@ public class TicTacToeField {
         int o = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (field[i][j] == FieldState.X) {
+                if (field[i][j] == CellState.X) {
                     x++;
                 }
-                if (field[i][j] == FieldState.O) {
+                if (field[i][j] == CellState.O) {
                     o++;
                 }
             }
@@ -84,33 +91,32 @@ public class TicTacToeField {
         return 'X';
     }
 
-    public char checkSolved() {
-        char winner = '0';
+    public boolean isWin(CellState player) {
         for (int i = 0; i < 3; i++) {
             // check the rows
-            if (field[i][0] != FieldState.FREE && field[i][0] == field[i][1] && field[i][1] == field[i][2]) {
-                return FieldState.getChar(field[i][0]);
+            if (field[i][0] == field[i][1] && field[i][1] == field[i][2] && field[i][2] == player) {
+                return true;
             }
             // check the columns
-            if (field[0][i] != FieldState.FREE && field[0][i] == field[1][i] && field[1][i] == field[2][i]) {
-                return FieldState.getChar(field[0][i]);
+            if (field[0][i] == field[1][i] && field[1][i] == field[2][i] && field[2][i] == player) {
+                return true;
             }
         }
         // check left top to bottom diagonal
-        if (field[0][0] != FieldState.FREE && field[0][0] == field[1][1] && field[1][1] == field[2][2]) {
-            return FieldState.getChar(field[0][0]);
+        if (field[0][0] == field[1][1] && field[1][1] == field[2][2] &&  field[2][2] == player) {
+            return true;
         }
         // check right top to bottom diagonal
-        if (field[0][2] != FieldState.FREE && field[0][2] == field[1][1] && field[1][1] == field[2][0]) {
-            return FieldState.getChar(field[0][2]);
+        if (field[0][2] == field[1][1] && field[1][1] == field[2][0] && field[0][2] == player) {
+            return true;
         }
-        return winner;
+        return false;
     }
 
     public boolean isBoardFull() {
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                if(FieldState.getChar(field[i][j]) == ' ') {
+                if(" ".equals(field[i][j].getName())) {
                     return false;
                 }
             }
@@ -119,14 +125,48 @@ public class TicTacToeField {
     }
 
     public void printBoard() {
-        System.out.println("---------");
+//        System.out.println("---------");
+//        for (int i = 0; i < 3; i++) {
+//            System.out.printf("%s", "|");
+//            for (int j = 0; j < 3; j++) {
+//                System.out.printf("%s%s"," ", field[i][j].getName());
+//            }
+//            System.out.printf("%s%n", " |");
+//        }
+//        System.out.println("---------");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("---------").append("\n");
         for (int i = 0; i < 3; i++) {
-            System.out.printf("%s", "|");
-            for (int j = 0; j < 3; j++) {
-                System.out.printf("%s%c"," ", FieldState.getChar(field[i][j]));
-            }
-            System.out.printf("%s%n", " |");
+            stringBuilder.append("| ").append(field[i][0].getName()).append(" ")
+                    .append(field[i][1].getName()).append(" ").append(field[i][2].getName()).append(" |\n");
         }
-        System.out.println("---------");
+        stringBuilder.append("---------");
+        System.out.println(stringBuilder);
+    }
+
+    public GameState getGameState() {
+        if (isWin(CellState.X)) return GameState.X_WIN;
+        if (isWin(CellState.O)) return GameState.O_WIN;
+        if (!isBoardFull()) return GameState.NOT_FINISHED;
+        else return GameState.DRAW;
+    }
+
+    private String getRandomMove() {
+        Random rand = new Random();
+        int randomChoice = rand.nextInt(9);
+        int row = randomChoice / 3 + 1;
+        int col = randomChoice % 3 + 1;
+        String coord = row + " " + col;
+        //System.out.println(randomChoice + ": " + coord);
+        return coord;
+    }
+    public void easyAiMove() {
+        while (true) {
+            String coord = getRandomMove();
+            if (checkCoordinatesAI(coord)) {
+                System.out.println("Making move level \"easy\"");
+                break;
+            }
+        }
     }
 }
