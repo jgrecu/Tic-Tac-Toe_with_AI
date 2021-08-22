@@ -36,11 +36,7 @@ public class Game {
     private void startGame() {
         while (field.getGameState() == GameState.NOT_FINISHED) {
             if (justComputer) {
-                if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
-                    field.mediumAiMove();
-                } else {
-                    field.easyAiMove();
-                }
+                playComputer();
             } else {
                 playUser();
             }
@@ -57,6 +53,14 @@ public class Game {
         }
     }
 
+    private void playComputer() {
+        if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
+            field.mediumAiMove();
+        } else {
+            field.easyAiMove();
+        }
+    }
+
     private boolean checkInput(String input) {
         final String TYPE_REGEX = "(easy|medium|hard|user)";
         String[] parts = input.toLowerCase().split("\\s+");
@@ -67,7 +71,7 @@ public class Game {
             this.commands[0] = parts[0];
             this.commands[1] = parts[1];
             this.commands[2] = parts[2];
-            this.justComputer = !"user".equals(parts[1]) || !"user".equals(parts[2]);
+            this.justComputer = !"user".equals(parts[1]) && !"user".equals(parts[2]);
             return true;
         }
         System.out.println(BAD_PARAMETERS);
@@ -78,11 +82,7 @@ public class Game {
         if (userTurn) {
             getCoordinates();
         } else {
-            if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
-                field.mediumAiMove();
-            } else { //if ("easy".equals(commands[1]) || "easy".equals(commands[2])) {
-                field.easyAiMove();
-            }
+            playComputer();
         }
         userTurn = !userTurn;
     }
