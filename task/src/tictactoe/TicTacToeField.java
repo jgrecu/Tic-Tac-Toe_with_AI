@@ -156,10 +156,9 @@ public class TicTacToeField {
         int randomChoice = rand.nextInt(9);
         int row = randomChoice / 3 + 1;
         int col = randomChoice % 3 + 1;
-        String coord = row + " " + col;
-        //System.out.println(randomChoice + ": " + coord);
-        return coord;
+        return row + " " + col;
     }
+
     public void easyAiMove() {
         while (true) {
             String coord = getRandomMove();
@@ -168,5 +167,66 @@ public class TicTacToeField {
                 break;
             }
         }
+    }
+
+    public void mediumAiMove() {
+        while (true) {
+            String coord = "";
+            char charPlayer = whosTurnIsIt();
+            CellState player = CellState.get(charPlayer);
+            if (canBeWinCoordinates(player) != null) {
+                //System.out.println(canBeWinCoordinates(player));
+                coord = canBeWinCoordinates(player);
+
+            } else if (canBeWinCoordinates(CellState.getOpponent(player)) != null) {
+                //System.out.println(canBeWinCoordinates(CellState.getOpponent(player)));
+                coord = canBeWinCoordinates(CellState.getOpponent(player));
+            } else {
+                coord = getRandomMove();
+            }
+
+            if (checkCoordinatesAI(coord)) {
+                System.out.println("Making move level \"medium\"");
+                break;
+            }
+        }
+    }
+
+    public String canBeWinCoordinates(CellState player) {
+        for (int i = 0; i < 3; i++) {
+            // check the rows
+            if (field[i][0] == field[i][1] && field[i][1] == player && field[i][2] == CellState.FREE) {
+                return (i + 1) + " " + 3;
+            } else if (field[i][1] == field[i][2] && field[i][2] == player && field[i][0] == CellState.FREE) {
+                return (i + 1) + " " + 1;
+            } else if (field[i][0] == field[i][2] && field[i][2] == player && field[i][1] == CellState.FREE) {
+                return (i + 1) + " " + 2;
+            }
+            // check the columns
+            if (field[0][i] == field[1][i] && field[1][i] == player && field[2][i] == CellState.FREE) {
+                return 3 + " " + (i + 1);
+            } else if (field[1][i] == field[2][i] && field[2][i] == player && field[0][i] == CellState.FREE) {
+                return 1 + " " + (i + 1);
+            } else if (field[0][i] == field[2][i] && field[2][i] == player && field[1][i] == CellState.FREE) {
+                return 2 + " " + (i + 1);
+            }
+        }
+        // check left top to bottom diagonal
+        if (field[0][0] == field[1][1] && field[1][1] == player && field[2][2] == CellState.FREE) {
+            return "3 3";
+        } else if (field[1][1] == field[2][2] && field[2][2] == player && field[0][0] == CellState.FREE) {
+            return "1 1";
+        } else if (field[0][0] == field[2][2] && field[2][2] == player && field[1][1] == CellState.FREE) {
+            return "2 2";
+        }
+        // check right top to bottom diagonal
+        if (field[0][2] == field[1][1] && field[0][2] == player && field[2][0] == CellState.FREE) {
+            return "3 1";
+        } else if (field[1][1] == field[2][0] && field[2][0] == player && field[0][2] == CellState.FREE) {
+            return "1 3";
+        } else if (field[0][2] == field[2][0] && field[2][0] == player && field[1][1] == CellState.FREE) {
+            return "2 2";
+        }
+        return null;
     }
 }

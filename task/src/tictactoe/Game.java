@@ -36,7 +36,11 @@ public class Game {
     private void startGame() {
         while (field.getGameState() == GameState.NOT_FINISHED) {
             if (justComputer) {
-                field.easyAiMove();
+                if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
+                    field.mediumAiMove();
+                } else {
+                    field.easyAiMove();
+                }
             } else {
                 playUser();
             }
@@ -54,29 +58,16 @@ public class Game {
     }
 
     private boolean checkInput(String input) {
+        final String TYPE_REGEX = "(easy|medium|hard|user)";
         String[] parts = input.toLowerCase().split("\\s+");
         if ("exit".equals(parts[0])) {
             System.exit(0);
         }
-        if (parts.length != 3 ) {
-            System.out.println(BAD_PARAMETERS);
-            return false;
-        }
-        if (!"start".equals(parts[0])) {
-            System.out.println(BAD_PARAMETERS);
-            return false;
-        }
-        if ("easy".equals(parts[1]) && "user".equals(parts[2]) || "user".equals(parts[1]) && "easy".equals(parts[2])) {
+        if (parts.length == 3 && "start".equals(parts[0]) && parts[1].matches(TYPE_REGEX) && parts[2].matches(TYPE_REGEX)) {
             this.commands[0] = parts[0];
             this.commands[1] = parts[1];
             this.commands[2] = parts[2];
-            return true;
-        }
-        if ("easy".equals(parts[1]) && "easy".equals(parts[2])) {
-            this.commands[0] = parts[0];
-            this.commands[1] = parts[1];
-            this.commands[2] = parts[2];
-            this.justComputer = true;
+            this.justComputer = !"user".equals(parts[1]) || !"user".equals(parts[2]);
             return true;
         }
         System.out.println(BAD_PARAMETERS);
@@ -87,7 +78,11 @@ public class Game {
         if (userTurn) {
             getCoordinates();
         } else {
-            field.easyAiMove();
+            if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
+                field.mediumAiMove();
+            } else { //if ("easy".equals(commands[1]) || "easy".equals(commands[2])) {
+                field.easyAiMove();
+            }
         }
         userTurn = !userTurn;
     }
