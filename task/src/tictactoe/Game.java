@@ -54,7 +54,9 @@ public class Game {
     }
 
     private void playComputer() {
-        if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
+        if ("hard".equals(commands[1]) || "hard".equals(commands[2])) {
+            field.hardAiMove();
+        } else if ("medium".equals(commands[1]) || "medium".equals(commands[2])) {
             field.mediumAiMove();
         } else {
             field.easyAiMove();

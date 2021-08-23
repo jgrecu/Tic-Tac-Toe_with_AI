@@ -5,12 +5,12 @@ import java.util.Random;
 public class TicTacToeField {
     final CellState[][] field;
 
-    public TicTacToeField(CellState[][] field) {
-        this.field = new CellState[3][3];
-        for (int i = 0; i < 3; i++) {
-            System.arraycopy(field[i], 0, this.field[i], 0, 3);
-        }
-    }
+//    public TicTacToeField(CellState[][] field) {
+//        this.field = new CellState[3][3];
+//        for (int i = 0; i < 3; i++) {
+//            System.arraycopy(field[i], 0, this.field[i], 0, 3);
+//        }
+//    }
 
 
     public TicTacToeField() {
@@ -47,7 +47,7 @@ public class TicTacToeField {
         return true;
     }
 
-    public boolean checkCoordinatesAI(String input) {
+    private boolean checkCoordinatesAI(String input) {
         String[] rowStr = input.split(" ");
 
         if (Integer.parseInt(rowStr[0]) > 3 || Integer.parseInt(rowStr[1]) > 3) {
@@ -125,15 +125,6 @@ public class TicTacToeField {
     }
 
     public void printBoard() {
-//        System.out.println("---------");
-//        for (int i = 0; i < 3; i++) {
-//            System.out.printf("%s", "|");
-//            for (int j = 0; j < 3; j++) {
-//                System.out.printf("%s%s"," ", field[i][j].getName());
-//            }
-//            System.out.printf("%s%n", " |");
-//        }
-//        System.out.println("---------");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("---------").append("\n");
         for (int i = 0; i < 3; i++) {
@@ -174,19 +165,35 @@ public class TicTacToeField {
             String coord = "";
             char charPlayer = whosTurnIsIt();
             CellState player = CellState.get(charPlayer);
+            CellState opponent = CellState.getOpponent(player);
             if (canBeWinCoordinates(player) != null) {
-                //System.out.println(canBeWinCoordinates(player));
                 coord = canBeWinCoordinates(player);
 
-            } else if (canBeWinCoordinates(CellState.getOpponent(player)) != null) {
-                //System.out.println(canBeWinCoordinates(CellState.getOpponent(player)));
-                coord = canBeWinCoordinates(CellState.getOpponent(player));
             } else {
-                coord = getRandomMove();
+                if (canBeWinCoordinates(opponent) != null) {
+                    coord = canBeWinCoordinates(opponent);
+                } else {
+                    coord = getRandomMove();
+                }
             }
 
             if (checkCoordinatesAI(coord)) {
                 System.out.println("Making move level \"medium\"");
+                break;
+            }
+        }
+    }
+
+    public void hardAiMove() {
+        char charPlayer = whosTurnIsIt();
+        CellState player = CellState.get(charPlayer);
+
+        while (true) {
+            String coord = "";
+            coord = findBestMove(field, player);
+
+            if (checkCoordinatesAI(coord)) {
+                System.out.println("Making move level \"hard\"");
                 break;
             }
         }
@@ -228,5 +235,62 @@ public class TicTacToeField {
             return "2 2";
         }
         return null;
+    }
+
+    private int minimax(CellState[][] board, CellState player, boolean isMaximize, CellState startPlayer, int depth) {
+
+        switch (getGameState()) {
+            case X_WIN:
+                return startPlayer == CellState.X ? 10 - depth : depth - 10;
+            case O_WIN:
+                return startPlayer == CellState.O ? 10 - depth : depth - 10;
+            case DRAW:
+                return 0;
+        }
+
+        int bestScore = isMaximize ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == CellState.FREE) {
+                    board[i][j] = player;
+                    int score = minimax(board, CellState.getOpponent(player), !isMaximize, startPlayer, depth + 1);
+                    board[i][j] = CellState.FREE;
+                    bestScore = isMaximize ? Math.max(bestScore, score) : Math.min(bestScore, score);
+                }
+            }
+        }
+        return bestScore;
+    }
+
+    private String findBestMove(CellState[][] board, CellState player) {
+        int bestScore = Integer.MIN_VALUE;
+        int row = -1;
+        int col = -1;
+
+        // Traverse all cells, evaluate minimax function for all empty cells. And return the cell with optimal value.
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                // Check if cell is empty
+                if (board[i][j] == CellState.FREE) {
+                    // Make the move
+                    board[i][j] = player;
+
+                    // compute evaluation function for this move.
+                    int score = minimax(board, CellState.getOpponent(player), false, player, 1);
+
+                    // Undo the move
+                    board[i][j] = CellState.FREE;
+
+                    // If the value of the current move is more than the best value, then update best
+                    if (score > bestScore) {
+                        bestScore = score;
+                        row = i;
+                        col = j;
+                    }
+                }
+            }
+        }
+        return (row + 1) + " " + (col + 1);
     }
 }
