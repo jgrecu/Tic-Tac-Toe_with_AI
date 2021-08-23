@@ -10,9 +10,9 @@ In this project, you'll write a game called Tic-Tac-Toe that you can play agains
 
 The top-left cell will have the coordinates (1, 1) and the bottom-right cell will have the coordinates (3, 3), as shown in this table:
 
-(1, 1) (1, 2) (1, 3)
-(2, 1) (2, 2) (2, 3)
-(3, 1) (3, 2) (3, 3)
+(1, 1) (1, 2) (1, 3) \n
+(2, 1) (2, 2) (2, 3) \n
+(3, 1) (3, 2) (3, 3) \n
 
 The program should ask the user to enter the coordinates of the cell where they want to make a move.
 
