@@ -126,12 +126,20 @@ public class TicTacToeField {
 
     public void printBoard() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("---------").append("\n");
+        stringBuilder.append("\n");
         for (int i = 0; i < 3; i++) {
-            stringBuilder.append("| ").append(field[i][0].getName()).append(" ")
-                    .append(field[i][1].getName()).append(" ").append(field[i][2].getName()).append(" |\n");
+            for (int j = 0; j < 3; j++) {
+                stringBuilder.append(" ").append(field[i][j].getName());
+                if (j < 2) {
+                    stringBuilder.append(" |");
+                } else {
+                    stringBuilder.append("\n");
+                }
+            }
+            if (i < 2) {
+                stringBuilder.append("---+---+---\n");
+            }
         }
-        stringBuilder.append("---------");
         System.out.println(stringBuilder);
     }
 

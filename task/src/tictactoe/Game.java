@@ -11,6 +11,7 @@ public class Game {
     private boolean justComputer = false;
 
     public void play() {
+        printMenu();
         while (true) {
             System.out.println("Input command: ");
             String string = scanner.nextLine();
@@ -19,6 +20,7 @@ public class Game {
                 break;
             }
         }
+        printMenuPlay();
         field.printBoard();
         startGame();
     }
@@ -89,4 +91,13 @@ public class Game {
         userTurn = !userTurn;
     }
 
+    public static void printMenu() {
+        System.out.println("Tic-Tac-Toe with AI\n\n" +
+                "accepted commands are \"start user easy/medium/hard\" or \"start easy/medium/hard user\", i.e." +
+                "\"start hard user\"\n");
+    }
+
+    public static void printMenuPlay() {
+        System.out.println("The coordinates are \"X Y\" from top left corner \"1 1\" to bottom right corner \"3 3\"\n");
+    }
 }
